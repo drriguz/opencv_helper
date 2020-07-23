@@ -1,0 +1,49 @@
+
+{
+	"buildFiles" : 
+	[
+		"/Users/hfli/Documents/PROJECTS/app/opencv_helper/android/src/main/cpp/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"/Users/hfli/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/hfli/Documents/PROJECTS/app/opencv_helper/android/.cxx/cmake/debug/armeabi-v7a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"lib_opencv-Debug-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "lib_opencv",
+			"buildType" : "debug",
+			"output" : "/Users/hfli/Documents/PROJECTS/app/opencv_helper/android/src/main/cpp/../jniLibs/armeabi-v7a/libopencv_java4.so",
+			"toolchain" : "7313459951877205053"
+		},
+		"opencv_helper-Debug-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "opencv_helper",
+			"buildCommand" : "/Users/hfli/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/hfli/Documents/PROJECTS/app/opencv_helper/android/.cxx/cmake/debug/armeabi-v7a --target opencv_helper",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=armv7-none-linux-androideabi16 --gcc-toolchain=/Users/hfli/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/hfli/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dopencv_helper_EXPORTS -I/Users/hfli/Documents/PROJECTS/app/opencv_helper/android/src/main/cpp/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -frtti -fexceptions -std=c++11 -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/Users/hfli/Documents/PROJECTS/app/opencv_helper/android/src/main/cpp/helper.cpp",
+					"workingDirectory" : "/Users/hfli/Documents/PROJECTS/app/opencv_helper/android/.cxx/cmake/debug/armeabi-v7a"
+				}
+			],
+			"output" : "/Users/hfli/Documents/PROJECTS/app/new/ben/okapia/build/opencv_helper/intermediates/cmake/debug/obj/armeabi-v7a/libopencv_helper.so",
+			"toolchain" : "7313459951877205053"
+		}
+	},
+	"toolchains" : 
+	{
+		"7313459951877205053" : 
+		{
+			"cCompilerExecutable" : "/Users/hfli/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/Users/hfli/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+		}
+	}
+}

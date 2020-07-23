@@ -1,0 +1,2 @@
+[1/2] Building CXX object CMakeFiles/opencv_helper.dir/helper.cpp.o
+[2/2] Linking CXX shared library /Users/hfli/Documents/PROJECTS/app/new/ben/okapia/build/opencv_helper/intermediates/cmake/debug/obj/x86/libopencv_helper.so

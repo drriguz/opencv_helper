@@ -1,0 +1,51 @@
+group 'com.riguz.opencv_helper'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 16
+
+        externalNativeBuild {
+            /*
+                fix for dlopen failed: library "libc++_shared.so" not found
+                https://stackoverflow.com/questions/57698796/cannot-detect-opencv-libs-after-update-form-3-4-3-to-4-1-1
+             */
+            cmake {
+                cppFlags "-frtti -fexceptions -std=c++11"
+                arguments "-DANDROID_STL=c++_shared"
+                abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+            }
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+}
