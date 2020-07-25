@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 class OpencvHelper {
-  static const MethodChannel _channel = const MethodChannel('opencv_helper');
+  static const MethodChannel _channel = const MethodChannel('com.riguz.opencv_helper');
 
   static Future<String> version() async {
     return _channel.invokeMethod('version', {});
