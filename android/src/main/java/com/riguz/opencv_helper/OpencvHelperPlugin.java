@@ -5,25 +5,26 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+import com.riguz.opencv_helper.camera.CameraPermissions;
 import com.riguz.opencv_helper.handler.MethodCallHandlerImpl;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.view.TextureRegistry;
 
 /**
  * OpencvHelperPlugin
  */
-public class OpenCVHelperPlugin implements FlutterPlugin, ActivityAware {
+public class OpencvHelperPlugin implements FlutterPlugin, ActivityAware {
     private FlutterPluginBinding flutterPluginBinding;
     private MethodCallHandlerImpl methodCallHandler;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        register(flutterPluginBinding.getBinaryMessenger());
         this.flutterPluginBinding = flutterPluginBinding;
     }
 
@@ -36,12 +37,17 @@ public class OpenCVHelperPlugin implements FlutterPlugin, ActivityAware {
     // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
     // depending on the user's project. onAttachedToEngine or registerWith must both be defined
     // in the same class.
-    public static void registerWith(Registrar registrar) {
-        register(registrar.messenger());
-    }
-
-    private static void register(BinaryMessenger messenger) {
-
+    public static void registerWith(final Registrar registrar) {
+        OpencvHelperPlugin plugin = new OpencvHelperPlugin();
+        plugin.maybeStartListening(registrar.activity(),
+                registrar.messenger(),
+                registrar.view(),
+                new CameraPermissions.PermissionsRegistry() {
+                    @Override
+                    public void addListener(PluginRegistry.RequestPermissionsResultListener handler) {
+                        registrar.addRequestPermissionsResultListener(handler);
+                    }
+                });
     }
 
     @Override
@@ -50,10 +56,17 @@ public class OpenCVHelperPlugin implements FlutterPlugin, ActivityAware {
     }
 
     @Override
-    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+    public void onAttachedToActivity(@NonNull final ActivityPluginBinding binding) {
         maybeStartListening(binding.getActivity(),
                 flutterPluginBinding.getBinaryMessenger(),
-                flutterPluginBinding.getTextureRegistry());
+                flutterPluginBinding.getTextureRegistry(),
+                new CameraPermissions.PermissionsRegistry() {
+                    @Override
+                    public void addListener(PluginRegistry.RequestPermissionsResultListener handler) {
+                        binding.addRequestPermissionsResultListener(handler);
+                    }
+                }
+        );
     }
 
     @Override
@@ -81,12 +94,13 @@ public class OpenCVHelperPlugin implements FlutterPlugin, ActivityAware {
     private void maybeStartListening(
             Activity activity,
             BinaryMessenger messenger,
-            TextureRegistry textureRegistry) {
+            TextureRegistry textureRegistry,
+            CameraPermissions.PermissionsRegistry permissionsRegistry) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             // If the sdk is less than 21 (min sdk for Camera2) we don't register the plugin.
             return;
         }
 
-        methodCallHandler = new MethodCallHandlerImpl(activity, messenger, textureRegistry);
+        methodCallHandler = new MethodCallHandlerImpl(activity, messenger, textureRegistry, permissionsRegistry);
     }
 }

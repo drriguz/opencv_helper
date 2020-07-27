@@ -11,6 +11,7 @@ import io.flutter.plugin.common.MethodChannel;
 
 public class MethodInvoker {
     private final ResultExecutor resultExecutor;
+    private final DirectExecutor directExecutor;
     private final boolean async;
     private final Handler uiThreadHandler = new Handler(Looper.getMainLooper());
 
@@ -21,42 +22,61 @@ public class MethodInvoker {
         executor = Executors.newFixedThreadPool(NUMBER_OF_CORES);
     }
 
-    private MethodInvoker(ResultExecutor resultExecutor, boolean async) {
+    private MethodInvoker(ResultExecutor resultExecutor, DirectExecutor directExecutor, boolean async) {
         this.resultExecutor = resultExecutor;
+        this.directExecutor = directExecutor;
         this.async = async;
     }
 
     public static MethodInvoker sync(ResultExecutor resultExecutor) {
-        return new MethodInvoker(resultExecutor, false);
+        return new MethodInvoker(resultExecutor, null, false);
     }
 
     public static MethodInvoker async(ResultExecutor resultExecutor) {
-        return new MethodInvoker(resultExecutor, true);
+        return new MethodInvoker(resultExecutor, null, true);
+    }
+
+    public static MethodInvoker direct(DirectExecutor directExecutor) {
+        return new MethodInvoker(null, directExecutor, false);
     }
 
     public void execute(final MethodCall call, final MethodChannel.Result result) {
-        if (async)
+        if (directExecutor != null) {
+            try {
+                directExecutor.execute(call, result);
+            } catch (ExecuteException e) {
+                result.error(e.getErrorCode(), e.getMessage(), e.getCause());
+            }
+        } else if (async)
             executeAsync(call, result);
         else
             executeSync(call, result);
     }
 
     private void executeSync(final MethodCall call, final MethodChannel.Result result) {
-        Object returnValue = resultExecutor.execute(call);
-        result.success(returnValue);
+        try {
+            Object returnValue = resultExecutor.execute(call);
+            result.success(returnValue);
+        } catch (ExecuteException e) {
+            result.error(e.getErrorCode(), e.getMessage(), e.getCause());
+        }
     }
 
     private void executeAsync(final MethodCall call, final MethodChannel.Result result) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                final Object returnValue = resultExecutor.execute(call);
-                uiThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        result.success(returnValue);
-                    }
-                });
+                try {
+                    final Object returnValue = resultExecutor.execute(call);
+                    uiThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            result.success(returnValue);
+                        }
+                    });
+                } catch (ExecuteException e) {
+                    result.error(e.getErrorCode(), e.getMessage(), e.getCause());
+                }
             }
         });
     }
