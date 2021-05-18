@@ -19,7 +19,7 @@ Future<void> prepareResources() async {
   if (!imageFile.existsSync()) {
     print("Saving images to local ");
     http.Response response = await http.get(
-      'http://optipng.sourceforge.net/pngtech/img/lena.png',
+      'https://homepages.cae.wisc.edu/~ece533/images/lena.png',
     );
     final Uint8List bytes = response.bodyBytes;
     return imageFile.writeAsBytes(bytes);
